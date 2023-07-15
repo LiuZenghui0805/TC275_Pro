@@ -45,6 +45,7 @@
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
+#include "switch.h"
 
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
@@ -67,6 +68,7 @@ int core0_main(void)
     btt6200_init();       /* Initialize port pin for push button and LED          */
     Uart_Init(115200);
     led_init();
+    switch_init();
     STM0_channel0_Init(5000);
     btt6200_all_close();
 
@@ -74,7 +76,10 @@ int core0_main(void)
 
     while(1)
     {
-
+        my_printf("sw1:%d sw2:%d sw3:%d sw4:%d\r\n", switch_get_sw1_state(), switch_get_sw2_state(),
+                                                  switch_get_sw3_state(), switch_get_sw4_state());
+        led_toggled();
+        delayms(500);
     }
     return (1);
 }
