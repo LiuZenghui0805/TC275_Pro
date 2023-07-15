@@ -71,10 +71,10 @@ int core0_main(void)
     Uart_Init(115200);
     STM0_channel0_Init(5000);
     btt6200_all_close();
-    char *buf = "Hello World\r\n";
+
     while(1)
     {
-        ASCLIN2_PutBuff(buf, strlen(buf));
+        my_printf("Hello World\r\n");
         delayms(1000);
     }
     return (1);
