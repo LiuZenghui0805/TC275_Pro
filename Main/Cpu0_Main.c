@@ -41,9 +41,11 @@
 #include "btt6200.h"
 #include "usart.h"
 #include "stm.h"
+#include "led.h"
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
+
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
 
@@ -64,13 +66,15 @@ int core0_main(void)
 
     btt6200_init();       /* Initialize port pin for push button and LED          */
     Uart_Init(115200);
+    led_init();
     STM0_channel0_Init(5000);
     btt6200_all_close();
 
+    led_off();
+
     while(1)
     {
-        my_printf("Hello World\r\n");
-        delayms(1000);
+
     }
     return (1);
 }

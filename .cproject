@@ -22,6 +22,7 @@
 							<tool id="com.infineon.aurix.buildsystem.managed.tool.c.compiler.tasking.debug.1704455164" name="TASKING C/C++ Compiler" superClass="com.infineon.aurix.buildsystem.managed.tool.c.compiler.tasking.debug">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.infineon.aurix.buildsystem.managed.c.compiler.tasking.include.1508493379" name="Include paths" superClass="com.infineon.aurix.buildsystem.managed.c.compiler.tasking.include" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/BTT6200}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/LED}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/USART}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/STM}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Libraries/iLLD/TC27D/Tricore/_PinMap&quot;"/>
@@ -172,6 +173,7 @@
 							<tool id="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking.1986068395" name="TASKING Assembler" superClass="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.infineon.aurix.buildsystem.managed.c.assembler.tasking.includePaths.1375427295" name="Include paths" superClass="com.infineon.aurix.buildsystem.managed.c.assembler.tasking.includePaths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/BTT6200}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/LED}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/USART}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Hardware/STM}&quot;"/>
 								</option>
@@ -392,5 +394,12 @@
 			<content-type-mapping configuration="" content-type="org.eclipse.cdt.core.cxxSource" language="com.tasking.dbg.ctc.cpplanguage"/>
 		</project-mappings>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/TC275_Pro"/>
+		</configuration>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/TC275_Pro"/>
+		</configuration>
+	</storageModule>
 </cproject>
