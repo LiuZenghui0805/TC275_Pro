@@ -24,7 +24,7 @@ void asclin2RxISR(void)
 void Uart_Init(float32 baudrate) {
 
     // 关闭CPU中断
-    IfxCpu_disableInterrupts();
+    char interruptState = disableInterrupts();
     // 配置ASCLIN模块的结构体
     IfxAsclin_Asc_Config asc_Config;
     // 配置中断结构体
@@ -63,7 +63,7 @@ void Uart_Init(float32 baudrate) {
     IfxCpu_Irq_installInterruptHandler((void*)asclin2RxISR, INTPRIO_ASCLIN2_RX);
 
     // 打开CPU中断
-    IfxCpu_enableInterrupts();
+    restoreInterrupts(interruptState);
 }
 
 void ASCLIN2_PutChar(char ch) {
@@ -76,7 +76,7 @@ void ASCLIN2_PutStr(char *str) {
     }
 }
 
-void ASCLIN2_PutBuff(unsigned char *buff, unsigned long len) {
+void ASCLIN2_PutBuff(unsigned char *buff, int len) {
     while(len--) {
         ASCLIN2_PutChar(*buff);
         buff++;
@@ -99,10 +99,10 @@ char ASCLIN2_GetChar(void) {
     return  data;
 }
 
-char ASCLIN2_GetBuff(unsigned char *data, unsigned char len) {
-    Ifx_SizeT count = len;
+char ASCLIN2_GetBuff(unsigned char *data, int len) {
+    Ifx_SizeT count = (Ifx_SizeT)len;
 
-    if(ASCLIN2_GetCount < len) {
+    if(ASCLIN2_GetCount() < len) {
         return 1;
     }
 

@@ -5,6 +5,7 @@
 #include <IfxAsclin.h>
 #include <IfxCpu.h>
 #include <IfxCpu_Irq.h>
+#include <Bsp.h>
 // 通过包含该头文件 可以使用Asclin ASC模块的配置和设置函数 以及发送处理和接收数据等操作
 #include "IfxAsclin_Asc.h"
 // 通过包含该头文件 可以使用中断相关的函数和宏定义 以配置和管理中断
@@ -29,10 +30,10 @@ extern char uart_finish;
 void Uart_Init(float32 baudrate);
 void ASCLIN2_PutChar(char ch);
 void ASCLIN2_PutStr(char *str);
-void ASCLIN2_PutBuff(unsigned char *buff, unsigned long len);
+void ASCLIN2_PutBuff(unsigned char *buff, int len);
 uint8 ASCLIN2_GetCount(void);
 char ASCLIN2_GetChar(void);
-char ASCLIN2_GetBuff(unsigned char *data, unsigned char len);
+char ASCLIN2_GetBuff(unsigned char *data, int len);
 void ASCLIN2_clearGetCount(void);
 
 #endif

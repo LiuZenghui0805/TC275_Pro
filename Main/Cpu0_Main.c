@@ -40,23 +40,21 @@
  *********************************************************************************************************************/
 #include "btt6200.h"
 #include "usart.h"
+#include "stm.h"
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
 
-static void delay (uint32 cnt)
-{
-    while(cnt --);
-}
+//static void delay (uint32 cnt)
+//{
+//    while(cnt --);
+//}
 
 
 int core0_main(void)
 {
-    int num = 0;
-    char buf[50];
-
     IfxCpu_enableInterrupts();
 
     /* !!WATCHDOG0 AND SAFETY WATCHDOG ARE DISABLED HERE!!
@@ -71,18 +69,13 @@ int core0_main(void)
 
     btt6200_init();       /* Initialize port pin for push button and LED          */
     Uart_Init(115200);
+    STM0_channel0_Init(5000);
     btt6200_all_close();
-
+    char *buf = "Hello World\r\n";
     while(1)
     {
-
-        num = ASCLIN2_GetCount();
-        if(num > 0) {
-            ASCLIN2_GetBuff(buf, num);
-            ASCLIN2_PutBuff(buf, num);
-            ASCLIN2_clearGetCount();
-        }
-
+        ASCLIN2_PutBuff(buf, strlen(buf));
+        delayms(1000);
     }
     return (1);
 }
