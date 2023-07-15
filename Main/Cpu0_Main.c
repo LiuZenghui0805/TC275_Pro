@@ -47,11 +47,6 @@
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
 
-//static void delay (uint32 cnt)
-//{
-//    while(cnt --);
-//}
-
 
 int core0_main(void)
 {
