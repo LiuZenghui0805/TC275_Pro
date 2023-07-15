@@ -3,8 +3,8 @@
 
 #include <Ifx_Types.h>
 #include <IfxAsclin.h>
+#include <Ifx_Console.h>
 #include <IfxCpu.h>
-#include <IfxCpu_Irq.h>
 #include <Bsp.h>
 // 通过包含该头文件 可以使用Asclin ASC模块的配置和设置函数 以及发送处理和接收数据等操作
 #include "IfxAsclin_Asc.h"
@@ -35,6 +35,7 @@ uint8 ASCLIN2_GetCount(void);
 char ASCLIN2_GetChar(void);
 char ASCLIN2_GetBuff(unsigned char *data, int len);
 void ASCLIN2_clearGetCount(void);
+void my_printf(pchar format, ...);
 
 #endif
 

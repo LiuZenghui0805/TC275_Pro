@@ -2,6 +2,7 @@
 
 // 结构体用来表示ASCLIN模块的句柄或句柄相关数据
 IfxAsclin_Asc g_ascHandle;
+IfxStdIf_DPipe  g_ascStandardInterface;
 
 static uint8 g_ascTxBuffer[UART_TX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 static uint8 g_ascRxBuffer[UART_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
@@ -20,6 +21,9 @@ void asclin2RxISR(void)
     IfxAsclin_Asc_isrReceive(&g_ascHandle);
 }
 
+void my_printf(pchar format, ...) {
+    IfxStdIf_DPipe_print(&g_ascStandardInterface, format);
+}
 
 void Uart_Init(float32 baudrate) {
 
@@ -58,6 +62,9 @@ void Uart_Init(float32 baudrate) {
     asc_Config.pins = &pins;
     // 初始化ASCLIN2模块
     IfxAsclin_Asc_initModule(&g_ascHandle, &asc_Config);
+
+    IfxAsclin_Asc_stdIfDPipeInit(&g_ascStandardInterface, &g_ascHandle);
+    Ifx_Console_init(&g_ascStandardInterface);
 
     IfxCpu_Irq_installInterruptHandler((void*)asclin2TxISR, INTPRIO_ASCLIN2_TX);
     IfxCpu_Irq_installInterruptHandler((void*)asclin2RxISR, INTPRIO_ASCLIN2_RX);
