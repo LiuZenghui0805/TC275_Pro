@@ -32,10 +32,10 @@ void Uart_Init(float32 baudrate) {
     // 配置ASCLIN模块的结构体
     IfxAsclin_Asc_Config asc_Config;
     // 配置中断结构体
-
     // 使用默认值初始化配置结构体
     IfxAsclin_Asc_initModuleConfig(&asc_Config, UART_PIN_TX.module);
     IfxAsclin_Asc_initModuleConfig(&asc_Config, UART_PIN_RX.module);
+
     // 配置ASCLIN2模块
     asc_Config.baudrate.baudrate = baudrate;     // 设置波特率
     asc_Config.baudrate.prescaler = 4;            // 数据帧模式

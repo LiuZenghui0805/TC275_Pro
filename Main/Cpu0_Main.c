@@ -46,6 +46,8 @@
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
 #include "switch.h"
+#include "iso1i813t.h"
+
 
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
@@ -65,21 +67,33 @@ int core0_main(void)
     IfxCpu_emitEvent(&g_cpuSyncEvent);
     IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
 
-    btt6200_init();       /* Initialize port pin for push button and LED          */
+    btt6200_init();
     Uart_Init(115200);
     led_init();
     switch_init();
     STM0_channel0_Init(5000);
+    iso1i813t_init();
     btt6200_all_close();
 
     led_off();
-
+    uint8 in1_data, in2_data, in3_data, in4_data;
+    uint8 in1_err, in2_err, in3_err, in4_err;
     while(1)
     {
-        my_printf("sw1:%d sw2:%d sw3:%d sw4:%d\r\n", switch_get_sw1_state(), switch_get_sw2_state(),
-                                                  switch_get_sw3_state(), switch_get_sw4_state());
-        led_toggled();
-        delayms(500);
+
+        in1_err = iso1i813t_01_data_read(0x02, &in1_data);
+        in2_err = iso1i813t_02_data_read(0x02, &in2_data);
+        in3_err = iso1i813t_03_data_read(0x02, &in3_data);
+        in4_err = iso1i813t_04_data_read(0x02, &in4_data);
+
+        my_printf("input(00~08): err->%d  status: %x\r\n", in1_err, in1_data);      /* 0x00 */
+        my_printf("input(09~16): err->%d  status: %x\r\n", in2_err, in2_data);      /* 0x00 */
+        my_printf("input(17~24): err->%d  status: %x\r\n", in3_err, in3_data);      /* 0x15 */
+        my_printf("input(25~32): err->%d  status: %x\r\n", in4_err, in4_data);      /* 0x00 */
+        my_printf("****************************************************\r\n");
+
+        delayms(100);
+
     }
     return (1);
 }
