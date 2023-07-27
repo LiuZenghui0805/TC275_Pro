@@ -151,8 +151,8 @@ typedef enum
     IfxDma_ChannelInterruptControl_transferCountDecremented = 1  /**< \brief interrupt when transfer count (TCOUNT) is decremented */
 } IfxDma_ChannelInterruptControl;
 
-/** \brief DMA transfer definition
- * Definition in Ifx_DMA.BLK0.ME.CHCR.B.BLKM and Ifx_DMA.BLK1.ME.CHCR.B.BLKM
+/** \brief DMA transferA.BLK0.ME.CHCR.B.BLKM and Ifx_DMA.BLK1.M definition
+ * Definition in Ifx_DME.CHCR.B.BLKM
  */
 typedef enum
 {

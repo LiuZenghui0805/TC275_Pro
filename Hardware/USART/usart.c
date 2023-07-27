@@ -7,6 +7,7 @@ IfxStdIf_DPipe  g_ascStandardInterface;
 static uint8 g_ascTxBuffer[UART_TX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 static uint8 g_ascRxBuffer[UART_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 
+ASCLIN2_RX_Type uart2_rx_message;
 
 IFX_INTERRUPT(asclin2TxISR, 0, INTPRIO_ASCLIN2_TX);
 void asclin2TxISR(void)
@@ -38,7 +39,7 @@ void Uart_Init(float32 baudrate) {
 
     // 配置ASCLIN2模块
     asc_Config.baudrate.baudrate = baudrate;     // 设置波特率
-    asc_Config.baudrate.prescaler = 4;            // 数据帧模式
+    // asc_Config.baudrate.prescaler = 4;            // 数据帧模式
     asc_Config.baudrate.oversampling = IfxAsclin_OversamplingFactor_8;   // 数据长度
     asc_Config.dataBufferMode = Ifx_DataBufferMode_normal;  // 普通接收模式
 
@@ -63,11 +64,21 @@ void Uart_Init(float32 baudrate) {
     // 初始化ASCLIN2模块
     IfxAsclin_Asc_initModule(&g_ascHandle, &asc_Config);
 
+    volatile Ifx_SRC_SRCR *src_rx;
+    src_rx = IfxAsclin_getSrcPointerRx(asc_Config.asclin);
+    IfxSrc_init(src_rx, IfxSrc_Tos_dma, INTPRIO_ASCLIN2_RX);
+    IfxSrc_enable(src_rx);
+
+    volatile Ifx_SRC_SRCR *src_tx;
+    src_tx = IfxAsclin_getSrcPointerTx(asc_Config.asclin);
+    IfxSrc_init(src_tx, IfxSrc_Tos_dma, INTPRIO_ASCLIN2_TX);
+    IfxSrc_enable(src_tx);
+
     IfxAsclin_Asc_stdIfDPipeInit(&g_ascStandardInterface, &g_ascHandle);
     Ifx_Console_init(&g_ascStandardInterface);
 
-    IfxCpu_Irq_installInterruptHandler((void*)asclin2TxISR, INTPRIO_ASCLIN2_TX);
-    IfxCpu_Irq_installInterruptHandler((void*)asclin2RxISR, INTPRIO_ASCLIN2_RX);
+//    IfxCpu_Irq_installInterruptHandler((void*)asclin2TxISR, INTPRIO_ASCLIN2_TX);
+//    IfxCpu_Irq_installInterruptHandler((void*)asclin2RxISR, INTPRIO_ASCLIN2_RX);
 
     // 打开CPU中断
     restoreInterrupts(interruptState);

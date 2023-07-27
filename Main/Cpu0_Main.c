@@ -47,6 +47,7 @@
 #include "IfxScuWdt.h"
 #include "switch.h"
 #include "iso1i813t.h"
+#include "dma.h"
 
 
 
@@ -67,33 +68,42 @@ int core0_main(void)
     IfxCpu_emitEvent(&g_cpuSyncEvent);
     IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
 
-    btt6200_init();
+//    btt6200_init();
     Uart_Init(115200);
     led_init();
-    switch_init();
+//    switch_init();
     STM0_channel0_Init(5000);
-    iso1i813t_init();
-    btt6200_all_close();
-
+//    iso1i813t_init();
+//    btt6200_all_close();
+//    dma_rx_init();
+    dma_tx_init();
     led_off();
-    uint8 in1_data, in2_data, in3_data, in4_data;
-    uint8 in1_err, in2_err, in3_err, in4_err;
+    int i = 0;
+    int j = 0;
     while(1)
     {
 
-        in1_err = iso1i813t_01_data_read(0x02, &in1_data);
-        in2_err = iso1i813t_02_data_read(0x02, &in2_data);
-        in3_err = iso1i813t_03_data_read(0x02, &in3_data);
-        in4_err = iso1i813t_04_data_read(0x02, &in4_data);
+//        if(uart2_rx_message.rx_sign == 1) {
+//            for(j = 0; j < 8; j++) {
+//                my_printf("%c", uart2_rx_message.rxbuf[j]);
+//                // IfxDma_Dma_startChannelTransaction(&g_chn_tx);
+//            }
+//            my_printf("\r\n");
+//
+//            uart2_rx_message.rx_sign = 0;
+//            for(j = 0; j < 8; j++) {
+//                uart2_rx_message.rxbuf[j] = 0;
+//            }
+//        }
 
-        my_printf("input(00~08): err->%d  status: %x\r\n", in1_err, in1_data);      /* 0x00 */
-        my_printf("input(09~16): err->%d  status: %x\r\n", in2_err, in2_data);      /* 0x00 */
-        my_printf("input(17~24): err->%d  status: %x\r\n", in3_err, in3_data);      /* 0x15 */
-        my_printf("input(25~32): err->%d  status: %x\r\n", in4_err, in4_data);      /* 0x00 */
-        my_printf("****************************************************\r\n");
+        if(i == 500) {
+            IfxDma_Dma_startChannelTransaction(&g_chn_tx);
+            led_toggled();
+            i = 0;
+        }
 
-        delayms(100);
-
+        delayms(1);
+        i++;
     }
     return (1);
 }

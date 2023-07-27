@@ -27,6 +27,15 @@
 extern IfxAsclin_Asc g_ascHandle;
 extern char uart_finish;
 
+
+typedef struct ASCLIN2_RX_Type {
+        char rxbuf[8];
+        char rx_sign;
+        int rx_len;
+} ASCLIN2_RX_Type;
+
+extern ASCLIN2_RX_Type uart2_rx_message;
+
 void Uart_Init(float32 baudrate);
 void ASCLIN2_PutChar(char ch);
 void ASCLIN2_PutStr(char *str);
