@@ -26,7 +26,8 @@
 
 extern IfxAsclin_Asc g_ascHandle;
 extern char uart_finish;
-
+extern uint16 g_rx_count;
+extern uint8 rx_data[256];
 
 typedef struct ASCLIN2_RX_Type {
         char rxbuf[8];

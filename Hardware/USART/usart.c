@@ -1,13 +1,18 @@
 #include "usart.h"
+#include "ccu6.h"
+#include "string.h"
 
 // 结构体用来表示ASCLIN模块的句柄或句柄相关数据
 IfxAsclin_Asc g_ascHandle;
 IfxStdIf_DPipe  g_ascStandardInterface;
+uint8 rx_data[256];
 
 static uint8 g_ascTxBuffer[UART_TX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 static uint8 g_ascRxBuffer[UART_RX_BUFFER_SIZE + sizeof(Ifx_Fifo) + 8];
 
 ASCLIN2_RX_Type uart2_rx_message;
+
+uint16 g_rx_count = 0;
 
 IFX_INTERRUPT(asclin2TxISR, 0, INTPRIO_ASCLIN2_TX);
 void asclin2TxISR(void)
@@ -15,11 +20,13 @@ void asclin2TxISR(void)
     IfxAsclin_Asc_isrTransmit(&g_ascHandle);
 }
 
-
 IFX_INTERRUPT(asclin2RxISR, 0, INTPRIO_ASCLIN2_RX);
 void asclin2RxISR(void)
 {
     IfxAsclin_Asc_isrReceive(&g_ascHandle);
+    g_rx_count++;
+    IfxCcu6_clearCounter(&MODULE_CCU60, TRUE, FALSE);
+    IfxCcu6_Timer_start(&g_timer);
 }
 
 void my_printf(pchar format, ...) {
@@ -30,6 +37,7 @@ void Uart_Init(float32 baudrate) {
 
     // 关闭CPU中断
     char interruptState = disableInterrupts();
+
     // 配置ASCLIN模块的结构体
     IfxAsclin_Asc_Config asc_Config;
     // 配置中断结构体
@@ -50,6 +58,21 @@ void Uart_Init(float32 baudrate) {
     asc_Config.txBufferSize = UART_TX_BUFFER_SIZE;          // 选择发送缓冲区域的内存大小
     asc_Config.rxBuffer = &g_ascRxBuffer;                   // 选择接收的缓冲区域
     asc_Config.rxBufferSize = UART_RX_BUFFER_SIZE;          // 选择接收缓冲区域的内存大小
+    // asc_Config.fifo.buffMode = IfxAsclin_ReceiveBufferMode_rxFifo;
+    // asc_Config.fifo.inWidth = IfxAsclin_TxFifoInletWidth_1;
+    // asc_Config.fifo.outWidth = IfxAsclin_RxFifoOutletWidth_1;
+    // asc_Config.fifo.rxFifoInterruptLevel = IfxAsclin_RxFifoInterruptLevel_1;
+    // asc_Config.fifo.txFifoInterruptLevel = IfxAsclin_TxFifoInterruptLevel_1;
+
+    // asc_Config.bitTiming.medianFilter = IfxAsclin_SamplesPerBit_one;
+    // asc_Config.bitTiming.samplePointPosition = IfxAsclin_SamplePointPosition_1;
+
+    // asc_Config.clockSource = IfxAsclin_ClockSource_ascFastClock;
+
+    // asc_Config.frame.frameMode = IfxAsclin_FrameMode_asc;
+    // asc_Config.frame.idleDelay = IfxAsclin_IdleDelay_7;
+    // asc_Config.frame.dataLength = IfxAsclin_DataLength_8;
+
 
     // 设置ASCLIN2的引脚结构体
     const IfxAsclin_Asc_Pins pins = {
@@ -64,21 +87,24 @@ void Uart_Init(float32 baudrate) {
     // 初始化ASCLIN2模块
     IfxAsclin_Asc_initModule(&g_ascHandle, &asc_Config);
 
-    volatile Ifx_SRC_SRCR *src_rx;
-    src_rx = IfxAsclin_getSrcPointerRx(asc_Config.asclin);
-    IfxSrc_init(src_rx, IfxSrc_Tos_dma, INTPRIO_ASCLIN2_RX);
-    IfxSrc_enable(src_rx);
+//    volatile Ifx_SRC_SRCR *src_rx;
+//    src_rx = IfxAsclin_getSrcPointerRx(asc_Config.asclin);
+//    IfxSrc_init(src_rx, IfxSrc_Tos_dma, INTPRIO_ASCLIN2_RX);
+//    IfxSrc_enable(src_rx);
 
-    volatile Ifx_SRC_SRCR *src_tx;
-    src_tx = IfxAsclin_getSrcPointerTx(asc_Config.asclin);
-    IfxSrc_init(src_tx, IfxSrc_Tos_dma, INTPRIO_ASCLIN2_TX);
-    IfxSrc_enable(src_tx);
+//    volatile Ifx_SRC_SRCR *src_tx;
+//    src_tx = IfxAsclin_getSrcPointerTx(asc_Config.asclin);
+//    IfxSrc_init(src_tx, IfxSrc_Tos_dma, INTPRIO_ASCLIN2_TX);
+//    IfxSrc_enable(src_tx);
+
+    IfxAsclin_setRxFifoInterruptLevel(g_ascHandle.asclin, IfxAsclin_RxFifoInterruptLevel_1);
 
     IfxAsclin_Asc_stdIfDPipeInit(&g_ascStandardInterface, &g_ascHandle);
     Ifx_Console_init(&g_ascStandardInterface);
 
-//    IfxCpu_Irq_installInterruptHandler((void*)asclin2TxISR, INTPRIO_ASCLIN2_TX);
-//    IfxCpu_Irq_installInterruptHandler((void*)asclin2RxISR, INTPRIO_ASCLIN2_RX);
+    IfxCpu_Irq_installInterruptHandler((void*)asclin2TxISR, INTPRIO_ASCLIN2_TX);
+    IfxCpu_Irq_installInterruptHandler((void*)asclin2RxISR, INTPRIO_ASCLIN2_RX);
+
 
     // 打开CPU中断
     restoreInterrupts(interruptState);

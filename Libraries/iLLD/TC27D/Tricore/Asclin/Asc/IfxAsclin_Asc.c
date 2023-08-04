@@ -84,8 +84,8 @@ boolean IfxAsclin_Asc_canWriteCount(IfxAsclin_Asc *asclin, Ifx_SizeT count, Ifx_
 
 void IfxAsclin_Asc_clearRx(IfxAsclin_Asc *asclin)
 {
-    IfxAsclin_flushRxFifo(asclin->asclin);
     Ifx_Fifo_clear(asclin->rx);
+    IfxAsclin_flushRxFifo(asclin->asclin);
 }
 
 
