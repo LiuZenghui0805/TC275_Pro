@@ -11,8 +11,8 @@ char send_buf[8] = {8, 7, 6, 5, 4, 3, 2, 1};
 IFX_INTERRUPT(dma_rx_handler, 0, INTPRIO_DMA_RX);
 void dma_rx_handler(void)
 {
-    uart2_rx_message.rx_sign = 1;
-    IfxDma_setChannelDestinationAddress(&MODULE_DMA, (IfxDma_ChannelId)INTPRIO_ASCLIN2_RX, (void *) IFXCPU_GLB_ADDR_DSPR(IfxCpu_getCoreId(), &uart2_rx_message.rxbuf[0]));
+    // uart2_rx_message.rx_sign = 1;
+    // IfxDma_setChannelDestinationAddress(&MODULE_DMA, (IfxDma_ChannelId)INTPRIO_ASCLIN2_RX, (void *) IFXCPU_GLB_ADDR_DSPR(IfxCpu_getCoreId(), &uart2_rx_message.rxbuf[0]));
 }
 
 IFX_INTERRUPT(dma_tx_handler, 0, INTPRIO_DMA_TX);
@@ -49,9 +49,9 @@ void dma_rx_init(void) {
     // cfg.destinationAddressCircularRange = IfxDma_ChannelIncrementCircular_none;
     // cfg.destinationCircularBufferEnabled = FALSE;
     cfg.channelId = (IfxDma_ChannelId)INTPRIO_ASCLIN2_RX;
-    cfg.sourceAddress = (uint32)&g_ascHandle.asclin->RXDATA.U;
+    // cfg.sourceAddress = (uint32)&g_ascHandle.asclin->RXDATA.U;
     // cfg.destinationAddress = 0x90000000;
-    cfg.destinationAddress =  IFXCPU_GLB_ADDR_DSPR(IfxCpu_Id_0, uart2_rx_message.rxbuf);
+    // cfg.destinationAddress =  IFXCPU_GLB_ADDR_DSPR(IfxCpu_Id_0, uart2_rx_message.rxbuf);
     cfg.channelInterruptEnabled = TRUE;
     cfg.channelInterruptControl = IfxDma_ChannelInterruptControl_thresholdLimitMatch;
     cfg.channelInterruptPriority = INTPRIO_DMA_RX;
@@ -84,7 +84,7 @@ void dma_tx_init(void) {
     cfg.channelId = (IfxDma_ChannelId)INTPRIO_ASCLIN2_TX;
     cfg.sourceAddress = IFXCPU_GLB_ADDR_DSPR(IfxCpu_Id_0, send_buf);
     // cfg.destinationAddress = 0x90000000;
-    cfg.destinationAddress = (uint32)&g_ascHandle.asclin->TXDATA.U;
+    // cfg.destinationAddress = (uint32)&g_ascHandle.asclin->TXDATA.U;
     cfg.channelInterruptEnabled = TRUE;
     cfg.channelInterruptControl = IfxDma_ChannelInterruptControl_thresholdLimitMatch;
     cfg.channelInterruptPriority = INTPRIO_DMA_TX;

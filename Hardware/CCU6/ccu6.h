@@ -11,15 +11,16 @@
 #include <IfxScuCcu.h>
 
 #define ISR_PRIORITY_CCU6_INT1  40
-#define CCU6_TIMER_FREQ         IfxScuCcu_getSpbFrequency()                                       /* Timer module frequency in Hz         */
-#define CCU6_ISR_FREQ           1                                          /* ISR frequency in Hz                  */
-#define CCU6_TIMER_PERIOD       (CCU6_TIMER_FREQ / CCU6_ISR_FREQ) - 1       /* Timer module period in ticks         */
 
-extern uint16 g_count;
-extern uint16 g_rx_finsh;
-extern IfxCcu6_Timer g_timer;
+#define ISR_PRIORITY_CCU61_INT1  50
+
+
+extern uint16 g_rx2_finsh;
+extern uint16 g_rx3_finsh;
+extern IfxCcu6_Timer g_rx2_timer;
+extern IfxCcu6_Timer g_rx3_timer;
 
 void ccu6_init(void);
-
+void ccu61_init(void);
 
 #endif

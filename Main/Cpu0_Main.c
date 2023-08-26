@@ -49,14 +49,13 @@
 #include "iso1i813t.h"
 #include "dma.h"
 #include "ccu6.h"
+#include "string.h"
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
 
-
-
 int core0_main(void)
 {
-    unsigned char rxbuf[256] = {0};
+    unsigned char rxbuf[1024] = {0};
     IfxCpu_enableInterrupts();
 
     /* !!WATCHDOG0 AND SAFETY WATCHDOG ARE DISABLED HERE!!
@@ -70,58 +69,49 @@ int core0_main(void)
     IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
 
     btt6200_init();
-    Uart_Init(115200);
+    Uart2_Init(115200);
+    Uart3_Init(115200);
     led_init();
-//    switch_init();
+    switch_init();
     STM0_channel0_Init(5000);
-//    iso1i813t_init();
+    iso1i813t_init();
     btt6200_all_close();
     led_off();
     ccu6_init();
+    ccu61_init();
     int rx_count = 0;
     int i = 0;
-    int j = 0;
-    int read_count = 1;
-//    IfxCcu6_Timer_start(&g_timer);
     while(1)
     {
 
-        if(1 == g_rx_finsh) {
-            rx_count = g_rx_count; // * 4 + IfxAsclin_getRxFifoFillLevel(g_ascHandle.asclin);
-            my_printf("rx_count = %d\t", rx_count);
-            // my_printf("rx_buf = %s\r\n", g_ascHandle.rx->buffer);
-
-            if(rx_count != 50) {
-                btt6200_all_open();
-            }
-
-            if(rx_count >= 256) {
-                IfxAsclin_Asc_clearRx(&g_ascHandle);
-                rx_count = 0;
-                goto END;
-            }
-
-            for(j = 0; j < rx_count; j++)
-            {
-                IfxAsclin_Asc_read(&g_ascHandle, &rxbuf[j], (Ifx_SizeT*)&read_count, TIME_INFINITE);
-            }
-            END:
-            // IfxAsclin_Asc_read(&g_ascHandle, rxbuf, &rx_count, TIME_INFINITE);
-            // ASCLIN2_GetBuff(rxbuf, rx_count);
-            my_printf("rx_buf = %s\r\n", rxbuf);
-            g_rx_count = 0;
+        if(1 == g_rx2_finsh)
+        {
+            IfxAsclin_Asc_isrReceive(&g_asc2Handle);
+            rx_count = ASCLIN2_GetCount();
+            my_printf2("rx_count = %d\t", rx_count);
+            IfxAsclin_Asc_read(&g_asc2Handle, rxbuf, (Ifx_SizeT*)&rx_count, TIME_INFINITE);
+            my_printf2("rx_buf = %s\r\n", rxbuf);
             memset(rxbuf, 0, sizeof(rxbuf));
             ASCLIN2_clearGetCount();
-            g_rx_finsh = 0;
+            rx_count = 0;
+            g_rx2_finsh = 0;
         }
 
+        if(1 == g_rx3_finsh)
+        {
+            IfxAsclin_Asc_isrReceive(&g_asc3Handle);
+            rx_count = ASCLIN3_GetCount();
+            my_printf3("rx_count = %d\t", rx_count);
+            IfxAsclin_Asc_read(&g_asc3Handle, rxbuf, (Ifx_SizeT*)&rx_count, TIME_INFINITE);
+            my_printf3("rx_buf = %s\r\n", rxbuf);
+            memset(rxbuf, 0, sizeof(rxbuf));
+            ASCLIN3_clearGetCount();
+            rx_count = 0;
+            g_rx3_finsh = 0;
+        }
 
-        if(i == 500) {
-//            my_printf("g_count = %d\t", g_rx_count);
-//            my_printf("FILL = %d\t", IfxAsclin_getRxFifoFillLevel(g_ascHandle.asclin));
-//            my_printf("%s\r\n", g_ascHandle.rx->buffer);
-//            ASCLIN2_clearGetCount();
-//            my_printf("g_counter = %d\r\n", g_count);
+        if(i == 500)
+        {
             led_toggled();
             i = 0;
         }

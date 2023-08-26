@@ -11,7 +11,7 @@
 #include <IfxStm_regdef.h>
 #include <Bsp.h>
 
-#define STM0_CH0_PRIORITY  21
+#define STM0_CH0_PRIORITY  22
 
 
 void STM0_channel0_Init(uint32 us);

@@ -12,40 +12,51 @@
 #include "IfxCpu_Irq.h"
 
 // 发送最大的个数
-#define UART_TX_BUFFER_SIZE     256
+#define UART_TX_BUFFER_SIZE     128
 // 接收最大的个数
-#define UART_RX_BUFFER_SIZE     256
+#define UART_RX_BUFFER_SIZE     128
 // 发送的中断优先级
-#define INTPRIO_ASCLIN2_TX      19
+#define INTPRIO_ASCLIN2_TX      18
 // 接收的中断优先级
-#define INTPRIO_ASCLIN2_RX      18
+#define INTPRIO_ASCLIN2_RX      19
+// 发送的中断优先级
+#define INTPRIO_ASCLIN3_TX      20
+// 接收的中断优先级
+#define INTPRIO_ASCLIN3_RX      21
+
 // 定义发送和接收的引脚
-#define UART_PIN_TX             IfxAsclin2_TX_P02_0_OUT
-#define UART_PIN_RX             IfxAsclin2_RXB_P02_1_IN
+#define UART2_PIN_TX             IfxAsclin2_TX_P02_0_OUT
+#define UART2_PIN_RX             IfxAsclin2_RXB_P02_1_IN
+
+// 定义发送和接收的引脚
+#define UART3_PIN_TX             IfxAsclin3_TX_P32_3_OUT
+#define UART3_PIN_RX             IfxAsclin3_RXD_P32_2_IN
+
+extern IfxAsclin_Asc g_asc2Handle;
+extern IfxAsclin_Asc g_asc3Handle;
 
 
-extern IfxAsclin_Asc g_ascHandle;
-extern char uart_finish;
-extern uint16 g_rx_count;
-extern uint8 rx_data[256];
-
-typedef struct ASCLIN2_RX_Type {
-        char rxbuf[8];
-        char rx_sign;
-        int rx_len;
-} ASCLIN2_RX_Type;
-
-extern ASCLIN2_RX_Type uart2_rx_message;
-
-void Uart_Init(float32 baudrate);
+void Uart2_Init(float32 baudrate);
 void ASCLIN2_PutChar(char ch);
 void ASCLIN2_PutStr(char *str);
 void ASCLIN2_PutBuff(unsigned char *buff, int len);
-uint8 ASCLIN2_GetCount(void);
+uint16 ASCLIN2_GetCount(void);
 char ASCLIN2_GetChar(void);
 char ASCLIN2_GetBuff(unsigned char *data, int len);
 void ASCLIN2_clearGetCount(void);
-void my_printf(pchar format, ...);
+void my_printf2(pchar format, ...);
+
+
+void Uart3_Init(float32 baudrate);
+void ASCLIN3_PutChar(char ch);
+void ASCLIN3_PutStr(char *str);
+void ASCLIN3_PutBuff(unsigned char *buff, int len);
+uint16 ASCLIN3_GetCount(void);
+char ASCLIN3_GetChar(void);
+char ASCLIN3_GetBuff(unsigned char *data, int len);
+void ASCLIN3_clearGetCount(void);
+void my_printf3(pchar format, ...);
+
 
 #endif
 
