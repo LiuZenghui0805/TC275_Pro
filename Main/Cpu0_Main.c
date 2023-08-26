@@ -71,6 +71,7 @@ int core0_main(void)
     btt6200_init();
     Uart2_Init(115200);
     Uart3_Init(115200);
+    Uart1_Init(115200);
     led_init();
     switch_init();
     STM0_channel0_Init(5000);
@@ -79,6 +80,7 @@ int core0_main(void)
     led_off();
     ccu6_init();
     ccu61_init();
+    ccu62_init();
     int rx_count = 0;
     int i = 0;
     while(1)
@@ -88,9 +90,9 @@ int core0_main(void)
         {
             IfxAsclin_Asc_isrReceive(&g_asc2Handle);
             rx_count = ASCLIN2_GetCount();
-            my_printf2("rx_count = %d\t", rx_count);
+            my_printf2("rx2_count = %d\t", rx_count);
             IfxAsclin_Asc_read(&g_asc2Handle, rxbuf, (Ifx_SizeT*)&rx_count, TIME_INFINITE);
-            my_printf2("rx_buf = %s\r\n", rxbuf);
+            my_printf2("rx2_buf = %s\r\n", rxbuf);
             memset(rxbuf, 0, sizeof(rxbuf));
             ASCLIN2_clearGetCount();
             rx_count = 0;
@@ -101,13 +103,26 @@ int core0_main(void)
         {
             IfxAsclin_Asc_isrReceive(&g_asc3Handle);
             rx_count = ASCLIN3_GetCount();
-            my_printf3("rx_count = %d\t", rx_count);
+            my_printf3("rx3_count = %d\t", rx_count);
             IfxAsclin_Asc_read(&g_asc3Handle, rxbuf, (Ifx_SizeT*)&rx_count, TIME_INFINITE);
-            my_printf3("rx_buf = %s\r\n", rxbuf);
+            my_printf3("rx3_buf = %s\r\n", rxbuf);
             memset(rxbuf, 0, sizeof(rxbuf));
             ASCLIN3_clearGetCount();
             rx_count = 0;
             g_rx3_finsh = 0;
+        }
+
+        if(1 == g_rx1_finsh)
+        {
+            IfxAsclin_Asc_isrReceive(&g_asc1Handle);
+            rx_count = ASCLIN1_GetCount();
+            my_printf1("rx1_count = %d\t", rx_count);
+            IfxAsclin_Asc_read(&g_asc1Handle, rxbuf, (Ifx_SizeT*)&rx_count, TIME_INFINITE);
+            my_printf1("rx1_buf = %s\r\n", rxbuf);
+            memset(rxbuf, 0, sizeof(rxbuf));
+            ASCLIN1_clearGetCount();
+            rx_count = 0;
+            g_rx1_finsh = 0;
         }
 
         if(i == 500)

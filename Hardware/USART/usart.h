@@ -16,13 +16,18 @@
 // 接收最大的个数
 #define UART_RX_BUFFER_SIZE     128
 // 发送的中断优先级
-#define INTPRIO_ASCLIN2_TX      18
+#define INTPRIO_ASCLIN2_TX      40
 // 接收的中断优先级
-#define INTPRIO_ASCLIN2_RX      19
+#define INTPRIO_ASCLIN2_RX      41
 // 发送的中断优先级
-#define INTPRIO_ASCLIN3_TX      20
+#define INTPRIO_ASCLIN3_TX      42
 // 接收的中断优先级
-#define INTPRIO_ASCLIN3_RX      21
+#define INTPRIO_ASCLIN3_RX      43
+// 发送的中断优先级
+#define INTPRIO_ASCLIN1_TX      44
+// 接收的中断优先级
+#define INTPRIO_ASCLIN1_RX      45
+
 
 // 定义发送和接收的引脚
 #define UART2_PIN_TX             IfxAsclin2_TX_P02_0_OUT
@@ -32,8 +37,13 @@
 #define UART3_PIN_TX             IfxAsclin3_TX_P32_3_OUT
 #define UART3_PIN_RX             IfxAsclin3_RXD_P32_2_IN
 
+// 定义发送和接收的引脚
+#define UART1_PIN_TX             IfxAsclin1_TX_P15_0_OUT
+#define UART1_PIN_RX             IfxAsclin1_RXA_P15_1_IN
+
 extern IfxAsclin_Asc g_asc2Handle;
 extern IfxAsclin_Asc g_asc3Handle;
+extern IfxAsclin_Asc g_asc1Handle;
 
 
 void Uart2_Init(float32 baudrate);
@@ -56,6 +66,17 @@ char ASCLIN3_GetChar(void);
 char ASCLIN3_GetBuff(unsigned char *data, int len);
 void ASCLIN3_clearGetCount(void);
 void my_printf3(pchar format, ...);
+
+
+void Uart1_Init(float32 baudrate);
+void ASCLIN1_PutChar(char ch);
+void ASCLIN1_PutStr(char *str);
+void ASCLIN1_PutBuff(unsigned char *buff, int len);
+uint16 ASCLIN1_GetCount(void);
+char ASCLIN1_GetChar(void);
+char ASCLIN1_GetBuff(unsigned char *data, int len);
+void ASCLIN1_clearGetCount(void);
+void my_printf1(pchar format, ...);
 
 
 #endif
